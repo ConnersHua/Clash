@@ -1,0 +1,258 @@
+# 在本地端口上的 HTTP(S) 代理服务器
+# port: 7890
+
+# 在本地端口上的 SOCKS5 代理服务器
+# socks-port: 7891
+
+# Linux 和 macOS 的透明代理服务器端口 (重定向 TCP 和 TProxy UDP)
+# redir-port: 7892
+
+# Linux 上的透明代理服务器端口 (TProxy TCP 和 TProxy UDP)
+# tproxy-port: 7893
+
+# 在同一端口上运行 HTTP(S) 和 SOCKS4(A)/SOCKS5 服务器
+mixed-port: 7890
+
+# 本地 SOCKS5/HTTP(S) 服务器的身份验证
+# authentication:
+#  - "user1:pass1"
+#  - "user2:pass2"
+
+# 将其设置为 true 以允许从其他局域网 IP 地址连接到本地端服务器
+# allow-lan: false
+
+# 仅当 allow-lan 为 true 时才适用
+# '*': 绑定所有 IP 地址
+# 192.168.122.11: 绑定单个 IPv4 地址
+# "[aaaa::a8aa:ff:fe09:57d8]": 绑定单个 IPv6 地址
+# bind-address: '*'
+
+# Clash 路由工作模式
+# rule: 基于规则的数据包路由
+# global: 所有数据包将被转发到一个单一的目标端点
+# direct: 直接将数据包转发到互联网
+mode: rule
+
+# 默认情况下 Clash 将日志打印到 STDOUT
+# info / warning / error / debug / silent
+log-level: info
+
+# 当设置为 false 时，解析器不会将主机名转换为 IPv6 地址。
+# ipv6: false
+
+# RESTful web API 监听地址
+external-controller: 127.0.0.1:9090
+
+# 一个指向配置目录的相对路径或放置静态 Web 资源目录的绝对路径。
+# Clash 核心将在 'http://{{external-controller}}/ui' 为其提供服务。
+# external-ui: folder
+
+# RESTful API 的 secret (可选)
+# 通过指定 HTTP header 'Authorization: Bearer ${secret}' 进行身份验证
+# 如果 RESTful API 在 0.0.0.0 上侦听，请始终设置一个 secret
+# secret: ""
+
+# 出站接口名称
+# interface-name: en0
+
+# 仅适用于 Linux 的 fwmark
+# routing-mark: 6666
+
+# 用于 DNS 服务器和连接建立的静态 host (例如 /etc/hosts)
+#
+# 支持通配符主机名 (例如: *.clash.dev, *.foo.*.example.com)
+# 非通配符域名的优先级高于通配符域名
+# 示例: foo.example.com > *.example.com > .example.com
+# 注释: +.foo.com equals to .foo.com and foo.com
+hosts:
+  # '*.clash.dev': 127.0.0.1
+  # '.dev': 127.0.0.1
+  # 'alpha.clash.dev': '::1'
+  #
+  # > Firebase Cloud Messaging
+  'mtalk.google.com' : 108.177.125.188
+
+# profile:
+  # 将 `select` 结果存储在 $HOME/.config/clash/.cache
+  # 如果不想要此行为，请设置为 false
+  # 当两个不同的配置中存在相同名称的分组时，选定的值是共享的。
+  # store-selected: true
+
+  # 持久化 fakeip
+  # store-fake-ip: false
+
+# DNS 服务器设置
+# 这个部分是可选的。如果没有提供，则 DNS 服务器将被禁用。
+dns:
+  enable: true
+  listen: 0.0.0.0:53
+  # ipv6: false # 当设置为 false 时，对于 AAAA 类型的查询响应将为空。
+
+  # 这些 nameservers 用于解析下面的 DNS nameservers 主机名。
+  # 只指定IP地址
+  default-nameserver:
+    - 1.0.0.1
+    - 119.29.29.29
+  # enhanced-mode: fake-ip
+  fake-ip-range: 198.18.0.1/16 # Fake IP 地址池 CIDR
+  # use-hosts: true # 查找 hosts 并返回 IP 记录
+
+  # search-domains: [local] # A/AAAA 记录的搜索域名
+
+  # 此列表中的 Hostnames 将不会使用 FakeIP 进行解析
+  # 即，对这些域名的查询将始终使用它们的真实 IP 地址进行回答
+  fake-ip-filter:
+    - '*.lan'
+    - localhost.ptlogin2.qq.com
+    - '+.stun.*.*'
+    - '+.stun.*.*.*'
+    - '+.stun.*.*.*.*'
+    - '+.stun.*.*.*.*.*'
+    - 'lens.l.google.com'
+    - '*.n.n.srv.nintendo.net'
+    - '+.stun.playstation.net'
+    - 'xbox.*.*.microsoft.com'
+    - '*.*.xboxlive.com'
+    - '*.msftncsi.com'
+    - '*.msftconnecttest.com'
+    - '*.mcdn.bilivideo.cn'
+    - 'WORKGROUP'
+
+  # 支持 UDP/TCP/DoT/DoH，可以指定要连接的端口。
+  # 所有的 DNS 查询都将直接发送到域名服务器，不经过代理。Clash 使用收到的第一个结果来回答 DNS 请求。
+  nameserver:
+    # - 114.114.114.114 # default value
+    # - 8.8.8.8 # default value
+    # - tls://dns.rubyfish.cn:853 # DNS over TLS
+    # - https://1.1.1.1/dns-query # DNS over HTTPS
+    # - dhcp://en0 # dns from dhcp
+    # - '8.8.8.8#en0'
+    - 119.29.29.29
+
+  # 当存在 fallback 时，DNS 服务器将与 nameservers 中的服务器一起向此部分的服务器发送并发请求。
+  # 当 GEOIP 不是 CN 时，会使用来自 fallback 服务器的回答。
+  # 
+  # fallback:
+  #   - tcp://1.1.1.1
+  #   - 'tcp://1.1.1.1#en0'
+
+  # 如果使用 nameservers 中的服务器解析的 IP 地址在下面指定的子网中，则被视为无效，并使用 fallback 服务器的结果代替。
+  #
+  # 当 fallback-filter.geoip 为 true 且 IP 地址的 GEOIP 为 CN 时，使用 nameserver 中的服务器解析的 IP 地址。
+  #
+  # 如果 fallback-filter.geoip 为 false，则始终使用来自 nameserver 的域名服务器的结果，除非与 fallback-filter.ipcidr 匹配。
+  #
+  # 这是针对 DNS 污染攻击的一种对策
+  # fallback-filter:
+  #   geoip: true
+  #   geoip-code: CN
+  #   ipcidr:
+  #     - 240.0.0.0/4
+  #   domain:
+  #     - '+.google.com'
+  #     - '+.facebook.com'
+  #     - '+.youtube.com'
+
+  # 通过特定的域名服务器查找域名
+  nameserver-policy:
+    # > Google Dl
+    'dl.google.com': 119.29.29.29
+    'dl.l.google.com': 119.29.29.29
+    'update.googleapis.com': 119.29.29.29
+    # > PlayStation
+    '*.dl.playstation.net': 119.29.29.29
+
+proxies:
+
+proxy-groups:
+
+  - name: "Fallback"
+    type: fallback
+    proxies:
+      # '添加节点名到此'
+    url: 'http://www.gstatic.com/generate_204'
+    interval: 300
+
+  - name: "PROXY"
+    type: select
+    proxies:
+      - "Fallback"
+      # '添加节点名到此'
+
+  - name: "MATCH"
+    type: select
+    proxies:
+      - "PROXY"
+      - "DIRECT"
+
+proxy-providers:
+
+rule-providers:
+
+  Direct+:
+    type: http
+    behavior: classical
+    path: ./RuleSet/Direct+.txt
+    url: https://raw.githubusercontent.com/ConnersHua/Surge/outbound/Ruleset/Direct+.list
+    interval: 86400
+    format: text
+
+  Streaming!CN:
+    type: http
+    behavior: classical
+    path: ./RuleSet/Extra/Streaming/Region/!CN.txt
+    url: https://raw.githubusercontent.com/ConnersHua/Surge/outbound/Ruleset/Extra/Streaming/Region/!CN.list
+    interval: 86400
+    format: text
+
+  Proxy:
+    type: http
+    behavior: classical
+    path: ./RuleSet/Proxy.txt
+    url: https://raw.githubusercontent.com/ConnersHua/Surge/outbound/Ruleset/Proxy.list
+    interval: 86400
+    format: text
+
+  Direct:
+    type: http
+    behavior: classical
+    path: ./RuleSet/Direct.txt
+    url: https://raw.githubusercontent.com/ConnersHua/Surge/outbound/Ruleset/Direct.list
+    interval: 86400
+    format: text
+
+  Proxy+:
+    type: http
+    behavior: classical
+    path: ./RuleSet/Proxy+.txt
+    url: https://raw.githubusercontent.com/ConnersHua/Surge/outbound/Ruleset/Proxy+.list
+    interval: 86400
+    format: text
+
+tunnels:
+
+rules:
+
+  - RULE-SET,Direct+,DIRECT
+
+  - RULE-SET,Streaming!CN,PROXY
+
+  - RULE-SET,Proxy,PROXY
+
+  - RULE-SET,Direct,DIRECT
+
+  - RULE-SET,Proxy+,PROXY
+
+  # Local Area Network
+  - IP-CIDR,192.168.0.0/16,DIRECT
+  - IP-CIDR,10.0.0.0/8,DIRECT
+  - IP-CIDR,172.16.0.0/12,DIRECT
+  - IP-CIDR,127.0.0.0/8,DIRECT
+  - IP-CIDR,100.64.0.0/10,DIRECT
+  - IP-CIDR,224.0.0.0/4,DIRECT
+  - IP-CIDR,fe80::/10,DIRECT
+
+  # GeoIP China
+  - GEOIP,CN,DIRECT
+
+  - MATCH,MATCH
